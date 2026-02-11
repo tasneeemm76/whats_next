@@ -1,1 +1,1 @@
-web: gunicorn whats_next.wsgi
+web: gunicorn workshops.wsgi
