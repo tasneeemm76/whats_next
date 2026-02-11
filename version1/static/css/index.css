@@ -1,0 +1,144 @@
+:root {
+  --gold: #E1B80D;
+  --plum: #4B2E39;
+  --white: #ffffff;
+}
+
+body {
+  background-color: var(--white);
+  font-family: 'Segoe UI', sans-serif;
+}
+
+.navbar {
+  border-bottom: 2px solid #eee;
+}
+
+.navbar-brand,
+.card-title,
+.sidebar-filters h5,
+.sidebar-filters p {
+  color: var(--plum);
+  font-weight: 600;
+}
+
+.btn-primary,
+.btn-enroll {
+  background-color: var(--gold);
+  border-color: var(--gold);
+  color: #000;
+}
+
+.btn-primary:hover,
+.btn-enroll:hover {
+  background-color: #cfa806;
+  border-color: #cfa806;
+}
+
+.badge.bg-primary {
+  background-color: var(--plum) !important;
+  color: white;
+}
+
+/* ==========================================================================
+   Uniform workshop image display (no distortion, fixed container)
+   - Fixed-size container: same width/height for all cards; aspect-ratio keeps
+     proportions consistent without setting pixel height (responsive).
+   - object-fit: cover — image fills the box, aspect ratio preserved;
+     overflow is cropped (no stretch/squash). object-position: center keeps
+     crop centered for both portrait and landscape.
+   - Original uploaded images are never modified; all handling is CSS-only.
+   ========================================================================== */
+.workshop-card {
+  overflow: hidden;
+}
+
+.workshop-card-image {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background-color: #eee;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.workshop-card-image__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  display: block;
+}
+
+/* Fallback when aspect-ratio is not supported (e.g. older Safari) */
+@supports not (aspect-ratio: 16 / 9) {
+  .workshop-card-image {
+    height: 0;
+    padding-bottom: 56.25%; /* 16:9 */
+    position: relative;
+  }
+  .workshop-card-image__img {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+}
+
+/* Responsive: same uniform behavior; optional taller ratio on small screens */
+@media (max-width: 768px) {
+  .workshop-card-image {
+    aspect-ratio: 4 / 3;
+  }
+  @supports not (aspect-ratio: 4 / 3) {
+    .workshop-card-image {
+      padding-bottom: 75%;
+    }
+  }
+}
+
+.sidebar-filters .form-check-input:checked {
+  background-color: var(--gold);
+  border-color: var(--gold);
+}
+
+.dropdown-menu {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  /* Sidebar filters: turn into horizontal bar on top */
+  .sidebar-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: start;
+    gap: 1rem;
+    border: none;
+    box-shadow: none;
+  }
+
+  .sidebar-filters h5,
+  .sidebar-filters hr {
+    display: none; /* Hide heading + dividers on small screens */
+  }
+
+  .sidebar-filters p {
+    margin-bottom: 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+
+  .sidebar-filters .form-check {
+    display: inline-block;
+    margin-right: 1rem;
+  }
+
+  /* Grid layout: one card per row */
+  .row.g-4 > [class*="col-"] {
+    flex: 0 0 100%;
+    max-width: 100%;
+  }
+}

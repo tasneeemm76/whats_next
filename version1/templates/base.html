@@ -1,0 +1,121 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}What's Next{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    :root {
+      --gold: #E1B80D;
+      --plum: #4B2E39;
+      --white:rgb(255, 255, 255);
+    }
+  </style>
+</head>
+<body class="bg-[var(--peach)] text-[var(--plum)] font-sans">
+
+  <!--  Header -->
+  <header class="bg-[var(--plum)] text-white sticky top-0 z-50 shadow">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+
+      <!-- Logo -->
+      <a href="{% url 'index' %}" class="flex items-center space-x-2">
+        <span class="text-xl font-bold text-[var(--gold)]">What's Next</span>
+      </a>
+
+      <!-- Navigation: Guest = Login/Register; User = Logout; Organizer = Create Workshop, Dashboard, Logout -->
+      <nav class="hidden md:flex space-x-6 text-sm font-medium items-center">
+        <a href="{% url 'index' %}" class="hover:text-[var(--gold)]">Home</a>
+        {% if not session_user %}
+          <a href="{% url 'register_workshop' %}" class="hover:text-[var(--gold)]">Register</a>
+          <a href="{% url 'login' %}" class="hover:text-[var(--gold)]">Login</a>
+        {% else %}
+          {% if is_organizer %}
+            <a href="{% url 'create_workshop' %}" class="hover:text-[var(--gold)]">Create Workshop</a>
+            <a href="{% url 'organizer_dashboard' %}" class="hover:text-[var(--gold)]">Dashboard</a>
+          {% endif %}
+          <a href="{% url 'logout' %}" class="hover:text-[var(--gold)]">Logout</a>
+        {% endif %}
+        <a href="#" class="hover:text-[var(--gold)]">Contact</a>
+      </nav>
+
+      <!-- Search -->
+      <div class="hidden md:flex items-center relative">
+        <input type="text" placeholder="Search..." class="pl-10 pr-4 py-2 rounded-full text-sm w-64 bg-white text-black focus:outline-none focus:ring-2 focus:ring-[var(--gold)]">
+        <svg class="absolute left-3 top-2.5 w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path d="M21 21l-4.35-4.35m0 0a7 7 0 1 0-9.9-9.9 7 7 0 0 0 9.9 9.9z"/>
+        </svg>
+      </div>
+    </div>
+  </header>
+<!--  Banner Section -->
+<section class="bg-[var(--plum)] text-white py-10 px-6 rounded-b-xl shadow">
+  <div class="max-w-4xl mx-auto text-center">
+    <h1 class="text-3xl md:text-4xl font-bold text-[var(--gold)] mb-4">
+      Fuel your free time with flair.
+    </h1>
+    <p class="text-lg leading-relaxed">
+      Discover exciting workshops that break the boredom – whether you're flying solo, tagging along with your partner, or showing up with a crew, there's something for everyone!
+    </p>
+  </div>
+</section>
+
+  <!-- Content Block -->
+  <main class="max-w-7xl mx-auto px-4 py-6 min-h-screen">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!--  Footer -->
+  <footer class="bg-[var(--plum)] text-white pt-10 pb-6">
+    <div class="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-4 gap-6 text-sm">
+      
+      <!-- About -->
+      <div>
+        <h3 class="text-lg font-semibold mb-2 text-[var(--gold)]">About Us</h3>
+        <p>Discover unique workshops and experiences happening near you. Powered by creativity and community.</p>
+      </div>
+
+      <!-- Quick Links -->
+      <div>
+        <h3 class="text-lg font-semibold mb-2 text-[var(--gold)]">Quick Links</h3>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:underline">Register Workshop</a></li>
+          <li><a href="#" class="hover:underline">Explore Events</a></li>
+          <li><a href="#" class="hover:underline">FAQs</a></li>
+        </ul>
+      </div>
+
+      <!-- Feedback -->
+      <div>
+        <h3 class="text-lg font-semibold mb-2 text-[var(--gold)]">Feedback</h3>
+        <ul class="space-y-1">
+          <li><a href="#" class="hover:underline">Submit Feedback</a></li>
+          <li><a href="#" class="hover:underline">Read Reviews</a></li>
+          <li><a href="#" class="hover:underline">Contact Support</a></li>
+        </ul>
+      </div>
+
+      <!-- Contact -->
+      <div>
+        <h3 class="text-lg font-semibold mb-2 text-[var(--gold)]">Contact</h3>
+        <ul class="space-y-1">
+          <li>Email: <a href="mailto:hello@whatsnext.com" class="hover:underline">hello@whatsnext.com</a></li>
+          <li>Phone: <a href="tel:+919999999999" class="hover:underline">+91 99999 99999</a></li>
+        </ul>
+        <div class="mt-4 flex space-x-3">
+          <a href="#" class="hover:text-[var(--gold)]">Facebook</a>
+          <a href="#" class="hover:text-[var(--gold)]">Instagram</a>
+          <a href="#" class="hover:text-[var(--gold)]">Twitter</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="text-center text-xs mt-6 text-[var(--peach)] border-t border-[var(--gold)] pt-3">
+      © 2025 What's Next. All rights reserved.
+    </div>
+  </footer>
+
+</body>
+</html>

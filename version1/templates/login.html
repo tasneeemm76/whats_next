@@ -1,0 +1,30 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}Login - What's Next?{% endblock %}
+{% block heading %}Login{% endblock %}
+{% block subheading %}Welcome back — sign in to continue.{% endblock %}
+
+{% block form %}
+  <form method="post" action="{% url 'login' %}">
+    {% csrf_token %}
+
+    <div class="auth-field">
+      <label class="auth-label" for="email">Email address</label>
+      <input id="email" type="email" class="auth-input" name="email" autocomplete="email" required>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="password">Password</label>
+      <input id="password" type="password" class="auth-input" name="password" autocomplete="current-password" required>
+    </div>
+
+    <button type="submit" class="auth-btn">Login</button>
+  </form>
+{% endblock %}
+
+{% block switch %}
+  <div class="auth-switch">
+    Don’t have an account?
+    <a href="{% url 'signup' %}">Sign up</a>
+  </div>
+{% endblock %}

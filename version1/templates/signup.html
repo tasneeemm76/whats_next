@@ -1,0 +1,53 @@
+{% extends 'auth_base.html' %}
+
+{% block title %}Sign up - What's Next?{% endblock %}
+{% block heading %}Sign up{% endblock %}
+{% block subheading %}Create your account in under a minute.{% endblock %}
+
+{% block form %}
+  <form method="post" action="{% url 'signup' %}">
+    {% csrf_token %}
+
+    <div class="auth-field">
+      <label class="auth-label" for="name">Full name</label>
+      <input id="name" type="text" class="auth-input" name="name" autocomplete="name" required>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="email">Email address</label>
+      <input id="email" type="email" class="auth-input" name="email" autocomplete="email" required>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="phone">Phone number</label>
+      <input id="phone" type="text" class="auth-input" name="phone" autocomplete="tel">
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="role">Role</label>
+      <select id="role" name="role" class="auth-select">
+        <option value="user">User</option>
+        <option value="organizer">Organizer</option>
+      </select>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="password">Password</label>
+      <input id="password" type="password" class="auth-input" name="password" autocomplete="new-password" required>
+    </div>
+
+    <div class="auth-field">
+      <label class="auth-label" for="confirm_password">Confirm password</label>
+      <input id="confirm_password" type="password" class="auth-input" name="confirm_password" autocomplete="new-password" required>
+    </div>
+
+    <button type="submit" class="auth-btn">Create account</button>
+  </form>
+{% endblock %}
+
+{% block switch %}
+  <div class="auth-switch">
+    Already have an account?
+    <a href="{% url 'login' %}">Login</a>
+  </div>
+{% endblock %}

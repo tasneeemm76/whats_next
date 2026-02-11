@@ -1,0 +1,62 @@
+CREATE TABLE whats_next_users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash TEXT NOT NULL,
+    phone VARCHAR(15),
+    role ENUM('user', 'organizer') NOT NULL DEFAULT 'user',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE whats_next_organizers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    organization_name VARCHAR(150),
+    website_url VARCHAR(200),
+    bio TEXT,
+    FOREIGN KEY (user_id) REFERENCES whats_next_users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE whats_next_workshop_categories (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) UNIQUE NOT NULL
+);
+
+CREATE TABLE whats_next_workshops (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    organizer_id INT NOT NULL,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    category_id INT,
+    location VARCHAR(200),
+    address TEXT,
+    date DATE NOT NULL,
+    start_time TIME,
+    end_time TIME,
+    price DECIMAL(10,2) DEFAULT 0.00,
+    capacity INT DEFAULT 50,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (organizer_id) REFERENCES whats_next_organizers(id) ON DELETE CASCADE,
+    FOREIGN KEY (category_id) REFERENCES whats_next_workshop_categories(id)
+);
+
+CREATE TABLE whats_next_bookings (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workshop_id INT NOT NULL,
+    booked_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    status ENUM('booked', 'cancelled') DEFAULT 'booked',
+    FOREIGN KEY (user_id) REFERENCES whats_next_users(id) ON DELETE CASCADE,
+    FOREIGN KEY (workshop_id) REFERENCES whats_next_workshops(id) ON DELETE CASCADE
+);
+
+CREATE TABLE whats_next_reviews (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    workshop_id INT NOT NULL,
+    rating INT CHECK (rating BETWEEN 1 AND 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES whats_next_users(id) ON DELETE CASCADE,
+    FOREIGN KEY (workshop_id) REFERENCES whats_next_workshops(id) ON DELETE CASCADE
+);

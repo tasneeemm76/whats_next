@@ -1,0 +1,46 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}What's Next?{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/auth.css' %}">
+</head>
+<body>
+  <!-- Sticky top navbar (compact, no clutter on mobile) -->
+  <header class="auth-navbar">
+    <div class="auth-navbar__inner">
+      <a class="auth-brand" href="{% url 'index' %}">What<span>'s Next</span></a>
+      <nav class="auth-navlinks" aria-label="Top navigation">
+        <a href="{% url 'index' %}">Home</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="auth-shell">
+    <section class="auth-card" aria-label="Authentication">
+      <h1 class="auth-title">{% block heading %}{% endblock %}</h1>
+      <p class="auth-subtitle">{% block subheading %}{% endblock %}</p>
+
+      {% if messages %}
+        <div class="auth-messages" role="status" aria-live="polite">
+          {% for message in messages %}
+            <div class="auth-alert
+                        {% if message.tags == 'success' %}auth-alert--success
+                        {% elif message.tags == 'error' %}auth-alert--error
+                        {% elif message.tags == 'warning' %}auth-alert--warn
+                        {% else %}auth-alert--info{% endif %}">
+              {{ message }}
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+
+      {% block form %}{% endblock %}
+      {% block switch %}{% endblock %}
+    </section>
+  </main>
+</body>
+</html>
+

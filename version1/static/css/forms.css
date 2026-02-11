@@ -1,0 +1,238 @@
+:root {
+  --gold: #E1B80D;
+  --plum: #4B2E39;
+  --white: #ffffff;
+  --peach: #FFDAB9;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #fdfdfd;
+  color: #222;
+}
+
+/* Header */
+.header {
+  background-color: var(--plum);
+  color: var(--white);
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.logo {
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: var(--gold);
+  text-decoration: none;
+}
+
+.nav a {
+  margin-left: 1rem;
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+}
+
+.nav a:hover {
+  color: var(--gold);
+}
+
+/* Form */
+.form-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
+}
+
+.form-container h2 {
+  margin-bottom: 1rem;
+  color: var(--plum);
+}
+
+.form-container label {
+  display: block;
+  margin-top: 1rem;
+  font-weight: bold;
+}
+
+.form-container input,
+.form-container textarea,
+.form-container select {
+  width: 100%;
+  padding: 0.6rem;
+  margin-top: 0.3rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.95rem;
+}
+
+.form-container input[type="file"] {
+  padding: 0.3rem;
+}
+
+.terms {
+  margin-top: 1.5rem;
+}
+
+.terms a {
+  color: var(--plum);
+  text-decoration: underline;
+}
+
+button[type="submit"] {
+  margin-top: 1.5rem;
+  background-color: var(--plum);
+  color: white;
+  padding: 0.7rem 1.2rem;
+  font-size: 1rem;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color: #3a1f2c;
+}
+
+/* Footer */
+.footer {
+  background-color: var(--plum);
+  color: white;
+  padding: 3rem 1rem 2rem;
+  font-size: 0.9rem;
+}
+
+.footer-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.footer-columns h3 {
+  color: var(--gold);
+  margin-bottom: 0.8rem;
+}
+
+.footer-columns ul {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-columns ul li {
+  margin-bottom: 0.5rem;
+}
+
+.footer-columns a {
+  color: white;
+  text-decoration: none;
+}
+
+.footer-columns a:hover {
+  color: var(--gold);
+}
+
+.social-links {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.footer-note {
+  text-align: center;
+  margin-top: 2rem;
+  border-top: 1px solid var(--gold);
+  padding-top: 1rem;
+  color: var(--peach);
+  font-size: 0.8rem;
+}
+
+/* -------- Responsive Design -------- */
+
+/* Small Devices (Phones, up to 600px) */
+@media (max-width: 600px) {
+  .container {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 0 1rem;
+  }
+
+  .nav {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+
+  .nav a {
+    margin: 0.5rem 0;
+  }
+
+  .form-container {
+    padding: 1.5rem 1rem;
+    margin: 1rem;
+  }
+
+  .form-container h2 {
+    font-size: 1.5rem;
+    text-align: center;
+  }
+
+  .footer-columns {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    padding: 1rem;
+  }
+
+  .social-links {
+    justify-content: center;
+  }
+}
+
+/* Medium Devices (Tablets, 600px to 900px) */
+@media (min-width: 601px) and (max-width: 900px) {
+  .container {
+    padding: 0 1.5rem;
+  }
+
+  .nav {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .form-container {
+    margin: 2rem 1rem;
+    padding: 2rem 1.5rem;
+  }
+
+  .footer-columns {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Large Devices (Desktops, 901px and above) */
+@media (min-width: 901px) {
+  .form-container {
+    margin: 3rem auto;
+  }
+
+  .footer-columns {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
