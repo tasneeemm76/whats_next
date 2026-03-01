@@ -28,8 +28,8 @@ SECRET_KEY = 'django-insecure-cef)ke&qkpt+$c=3!9*u*x1&_ohtyzo4@1x@72s5w)300d(kd5
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # Set DEBUG=false in .env for production; True enables static file serving in development
-DEBUG = os.getenv("DEBUG", "true").lower() in ("true", "1", "yes")
-
+#DEBUG = os.getenv("DEBUG", "true").lower() in ("true", "1", "yes")
+DEBUG = False 
 
 ALLOWED_HOSTS = ['*']
 
