@@ -1,105 +1,42 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Enroll - What's Next?</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="{% static 'css/explore.css' %}" rel="stylesheet">
-  <style>
-    /* Optional custom styles for enroll page */
-    .enroll-header {
-      background-color: var(--plum);
-      color: var(--gold);
-      padding: 3rem 1rem;
-      text-align: center;
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
-    }
 
-    .enroll-container {
-      max-width: 600px;
-      margin: -2rem auto 2rem;
-      background-color: #fff;
-      padding: 2rem;
-      border-radius: 8px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
-    }
+{% block title %}Enroll - What's Next?{% endblock %}
 
-    .enroll-container h2 {
-      margin-bottom: 1.5rem;
-      color: var(--plum);
-    }
+{% block extra_css %}
+  <link rel="stylesheet" href="{% static 'css/forms.css' %}">
+{% endblock %}
 
-    .btn-enroll-confirm {
-      background-color: var(--gold);
-      border-color: var(--gold);
-      color: #000;
-      width: 100%;
-      padding: 0.75rem;
-      font-size: 1rem;
-      font-weight: 600;
-      border-radius: 6px;
-      transition: 0.2s all;
-    }
+{% block content %}
+  <div class="wn-card-solid reveal" style="max-width: 560px; margin: 0 auto;">
+    <h2 class="wn-h2" style="margin: 0 0 var(--space-2);">{{ workshop.title }}</h2>
+    <ul class="enroll-meta">
+      <li><strong>Instructor:</strong> {{ workshop.instructor_name }}</li>
+      <li><strong>Date:</strong> {{ workshop.date }}</li>
+      <li><strong>Time:</strong> {{ workshop.start_time|time:"H:i" }}</li>
+      <li><strong>Location:</strong> {{ workshop.location }}</li>
+      <li><strong>Price:</strong> ₹{{ workshop.price }}</li>
+    </ul>
 
-    .btn-enroll-confirm:hover {
-      background-color: #cfa806;
-      border-color: #cfa806;
-      color: #000;
-    }
-
-    .info-text {
-      color: #555;
-      font-size: 0.95rem;
-      margin-bottom: 1rem;
-    }
-  </style>
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="enroll-header">
-    <h1>Enroll in Workshop</h1>
-    <p>Secure your spot and start learning!</p>
-  </header>
-
-  <!-- Enroll Form -->
-  <div class="enroll-container">
-    <h2>{{ workshop.title }}</h2>
-    <p class="info-text"><strong>Instructor:</strong> {{ workshop.instructor_name }}</p>
-    <p class="info-text"><strong>Date:</strong> {{ workshop.date }}</p>
-    <p class="info-text"><strong>Time:</strong> {{ workshop.start_time|time:"H:i" }}</p>
-    <p class="info-text"><strong>Location:</strong> {{ workshop.location }}</p>
-    <p class="info-text"><strong>Price:</strong> ₹{{ workshop.price }}</p>
-
-    <form method="post" action="{% url 'confirm_enroll' workshop.id %}">
+    <form method="post" action="{% url 'confirm_enroll' workshop.id %}" class="enroll-form">
       {% csrf_token %}
-      <div class="mb-3">
-        <label for="fullname" class="form-label">Full Name</label>
-        <input type="text" name="fullname" id="fullname" class="form-control" required>
-      </div>
+      <label class="form-label">Full Name</label>
+      <input type="text" name="fullname" id="fullname" class="form-input" required>
 
-      <div class="mb-3">
-        <label for="email" class="form-label">Email Address</label>
-        <input type="email" name="email" id="email" class="form-control" required>
-      </div>
+      <label class="form-label">Email Address</label>
+      <input type="email" name="email" id="email" class="form-input" required>
 
-      <div class="mb-3">
-        <label for="phone" class="form-label">Phone Number</label>
-        <input type="tel" name="phone" id="phone" class="form-control" required>
-      </div>
+      <label class="form-label">Phone Number</label>
+      <input type="tel" name="phone" id="phone" class="form-input" required>
 
-      <button type="submit" class="btn-enroll-confirm">Confirm Enrollment</button>
+      <button type="submit" class="wn-btn wn-btn--primary wn-interact" style="width: 100%; margin-top: var(--space-4); padding: var(--space-3);">Confirm Enrollment</button>
     </form>
   </div>
 
-  <!-- Footer -->
-  <footer class="bg-[var(--plum)] text-white text-center py-4 mt-5">
-    &copy; 2025 What's Next. All rights reserved.
-  </footer>
-
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+  <style>
+    .enroll-meta { list-style: none; padding: 0; margin: 0 0 var(--space-4); font-size: var(--text-small); color: var(--muted); line-height: 1.7; }
+    .enroll-meta li { margin-bottom: var(--space-1); }
+    .enroll-form .form-label { margin-top: var(--space-3); }
+    .enroll-form .form-input { margin-bottom: 0; }
+  </style>
+{% endblock %}

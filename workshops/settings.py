@@ -15,11 +15,9 @@ import os
 import dj_database_url
 from dotenv import load_dotenv
 
-load_dotenv()
-
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(BASE_DIR / ".env")
 
 
 # Quick-start development settings - unsuitable for production
@@ -29,7 +27,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-cef)ke&qkpt+$c=3!9*u*x1&_ohtyzo4@1x@72s5w)300d(kd5'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+# Set DEBUG=false in .env for production; True enables static file serving in development
+DEBUG = os.getenv("DEBUG", "true").lower() in ("true", "1", "yes")
 
 
 ALLOWED_HOSTS = ['*']
@@ -105,13 +104,24 @@ DATABASES = {
 }
 }'''
 
-DATABASES = {
-    'default': dj_database_url.parse(
-        os.getenv("DATABASE_URL"),
-        conn_max_age=600,
-        ssl_require=True
-    )
+_default_db = {
+    'ENGINE': 'django.db.backends.sqlite3',
+    'NAME': BASE_DIR / 'db.sqlite3',
 }
+database_url = (os.getenv("DATABASE_URL") or "").strip()
+if database_url and "://" in database_url and not database_url.startswith("://"):
+    try:
+        DATABASES = {
+            'default': dj_database_url.parse(
+                database_url,
+                conn_max_age=600,
+                ssl_require=True
+            )
+        }
+    except Exception:
+        DATABASES = {'default': _default_db}
+else:
+    DATABASES = {'default': _default_db}
 
 
 

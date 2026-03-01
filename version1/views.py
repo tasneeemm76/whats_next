@@ -4,6 +4,7 @@ from django.contrib.auth.hashers import make_password, check_password
 from .models import WhatsNextUsers, WhatsNextOrganizers, WhatsNextWorkshops, WhatsNextWorkshopCategories, WhatsNextBookings
 from django.utils import timezone
 from .decorators import login_required, organizer_required
+from django.db import transaction
 
 
 
@@ -47,7 +48,7 @@ def create_workshop_view(request):
         title = request.POST.get('title')
         description = request.POST.get('description')
         category_id = request.POST.get('category')
-        other_category = request.POST.get('other_category')
+        other_category = (request.POST.get('other_category') or "").strip()
         location = request.POST.get('location')
         address = request.POST.get('address')
         date = request.POST.get('date')
@@ -66,28 +67,39 @@ def create_workshop_view(request):
             messages.error(request, "You must be an organizer to create workshops.")
             return redirect('/')
 
-        # Handle "Other" category option
-        if category_id == 'other' and other_category:
-            category, created = WhatsNextWorkshopCategories.objects.get_or_create(name=other_category.strip())
-        else:
-            category = WhatsNextWorkshopCategories.objects.get(id=category_id)
+        # Wrap category + workshop creation in a transaction
+        with transaction.atomic():
+            # Handle "Other" category option safely
+            if category_id == 'other':
+                if not other_category:
+                    messages.error(request, "Please specify a category name when selecting 'Other'.")
+                    return redirect('create_workshop')
+                category, created = WhatsNextWorkshopCategories.objects.get_or_create(
+                    name=other_category
+                )
+            else:
+                try:
+                    category = WhatsNextWorkshopCategories.objects.get(id=int(category_id))
+                except (ValueError, WhatsNextWorkshopCategories.DoesNotExist):
+                    messages.error(request, "Please select a valid category.")
+                    return redirect('create_workshop')
 
-        WhatsNextWorkshops.objects.create(
-            organizer=organizer,
-            title=title,
-            description=description,
-            instructor_name=instructor_name,
-            category=category,
-            location=location,
-            address=address,
-            date=date,
-            start_time=start_time or None,
-            end_time=end_time or None,
-            price=price or 0,
-            capacity=capacity or 50,
-            poster=poster,
-            created_at=timezone.now()
-        )
+            WhatsNextWorkshops.objects.create(
+                organizer=organizer,
+                title=title,
+                description=description,
+                instructor_name=instructor_name,
+                category=category,
+                location=location,
+                address=address,
+                date=date,
+                start_time=start_time or None,
+                end_time=end_time or None,
+                price=price or 0,
+                capacity=capacity or 50,
+                poster=poster,
+                created_at=timezone.now()
+            )
 
         messages.success(request, "Workshop created successfully!")
         return redirect('/')  # Redirect to dashboard or list view

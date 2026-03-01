@@ -1,222 +1,134 @@
+{% extends 'base.html' %}
 {% load static %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Create Workshop | What's Next</title>
+
+{% block title %}Create Workshop | What's Next{% endblock %}
+
+{% block extra_css %}
   <link rel="stylesheet" href="{% static 'css/forms.css' %}">
-  <style>
-  /* --- Price + Free Workshop --- */
-  .price-group {
-    margin-top: 1rem;
-  }
+{% endblock %}
 
-  .price-group label {
-    display: block;
-    font-weight: bold;
-    margin-bottom: 0.3rem;
-  }
-
-  .price-group input[type="number"] {
-    width: 100%;
-    padding: 0.6rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  .free-checkbox {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-top: 0.5rem;
-    font-size: 0.95rem;
-    font-weight: normal;
-  }
-
-  .free-checkbox input[type="checkbox"] {
-    margin: 0;
-    transform: scale(1.1);
-  }
-
-  /* --- Terms and Conditions --- */
-  .terms {
-    margin-top: 1.5rem;
-    padding: 1rem;
-    border: 1px dotted #aaa;
-    background-color: #f9f9f9;
-    border-radius: 5px;
-    font-size: 0.95rem;
-    display: flex;
-    align-items: flex-start;
-    gap: 0.7rem;
-  }
-
-  .terms input[type="checkbox"] {
-    margin-top: 0.2rem;
-    transform: scale(1.1);
-  }
-</style>
-
-</head>
-<body>
-
-  <!-- Header -->
-  <header class="header">
-    <div class="container">
-      <a href="{% url 'index' %}" class="logo">What's Next</a>
-      <nav class="nav">
-        <a href="{% url 'index' %}">Home</a>
-        <a href="{% url 'register_workshop' %}">Register</a>
-        <a href="#">Explore</a>
-        <a href="#">Contact</a>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Workshop Form -->
-  <form method="POST" enctype="multipart/form-data" class="form-container">
+{% block content %}
+  <form method="POST" enctype="multipart/form-data" class="form-container wn-card-solid reveal">
     {% csrf_token %}
-    <h2 class="form-title">Create a New Workshop</h2>
+    <h2 class="wn-h2" style="margin: 0 0 var(--space-4);">Create a New Workshop</h2>
 
-    <label>Title</label>
-    <input type="text" name="title" required>
+    <label class="form-label">Title</label>
+    <input type="text" name="title" class="form-input" required>
 
-    <label>Description</label>
-    <textarea name="description"></textarea>
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-textarea" rows="4"></textarea>
 
-    <label>Category</label>
-    <select name="category" id="categorySelect" required>
+    <label class="form-label">Category</label>
+    <select name="category" id="categorySelect" class="form-select" required>
       {% for cat in categories %}
         <option value="{{ cat.id }}">{{ cat.name }}</option>
       {% endfor %}
       <option value="other">Other</option>
     </select>
 
-    <div id="otherCategoryDiv" style="display: none;">
-      <label>Specify Other Category</label>
-      <textarea name="other_category" id="otherCategoryText"></textarea>
+    <div id="otherCategoryDiv" class="form-other-cat">
+      <label class="form-label">Specify Other Category</label>
+      <textarea name="other_category" id="otherCategoryText" class="form-textarea" rows="2"></textarea>
     </div>
 
-    <label>Upload Poster / Photo</label>
-    <input type="file" name="poster" accept="image/*">
+    <label class="form-label">Upload Poster / Photo</label>
+    <input type="file" name="poster" accept="image/*" class="form-file">
 
-    <label>Instructor Name</label>
-    <input type="text" name="instructor_name" required>
+    <label class="form-label">Instructor Name</label>
+    <input type="text" name="instructor_name" class="form-input" required>
 
-    <label>Location</label>
-    <input type="text" name="location" placeholder="Enter area name" required>
+    <label class="form-label">Location</label>
+    <input type="text" name="location" class="form-input" placeholder="Enter area name" required>
 
-    <label>Address</label>
-    <textarea name="address" required></textarea>
+    <label class="form-label">Address</label>
+    <textarea name="address" class="form-textarea" rows="3" required></textarea>
 
-    <label>Date</label>
-    <input type="date" name="date" required>
+    <label class="form-label">Date</label>
+    <input type="date" name="date" class="form-input" required>
 
-    <label>Start Time</label>
-    <input type="time" name="start_time">
+    <label class="form-label">Start Time</label>
+    <input type="time" name="start_time" class="form-input">
 
-    <label>End Time</label>
-    <input type="time" name="end_time">
+    <label class="form-label">End Time</label>
+    <input type="time" name="end_time" class="form-input">
 
+    <div class="price-group">
+      <label class="form-label">Price</label>
+      <input type="number" name="price" id="priceInput" class="form-input" step="0.01" placeholder="Leave empty for free">
+      <label class="free-checkbox">
+        <input type="checkbox" id="freeWorkshopCheckbox"> This is a free workshop
+      </label>
+    </div>
 
-<!-- Price + Free -->
-<div class="price-group">
-  <label>Price</label>
-  <input type="number" name="price" id="priceInput" step="0.01" placeholder="Workshop will be listed as Free if this field is empty">
+    <label class="form-label">Capacity</label>
+    <input type="number" name="capacity" class="form-input" value="10">
 
- <label class="free-checkbox">
-  <input type="checkbox" id="freeWorkshopCheckbox">This is a free workshop
-</label>
+    <div class="terms">
+      <input type="checkbox" name="terms" id="termsCheck" required>
+      <div>
+        I agree to the terms and conditions:<br>
+        • Organizer ensures authenticity of the workshop details.<br>
+        • Cancellations must be communicated 48 hours in advance.<br>
+        • Offensive or harmful content is not permitted.<br>
+        • Organizer is responsible for managing attendees.<br>
+        • What's Next? holds the right to delist suspicious workshops.
+      </div>
+    </div>
 
-</div>
-
-    <label>Capacity</label>
-    <input type="number" name="capacity" value="10">
-
-   <!-- Terms -->
-<div class="terms">
-  <input type="checkbox" name="terms" required>
-  <div>
-    I agree to the terms and conditions:<br>
-    • Organizer ensures authenticity of the workshop details.<br>
-    • Cancellations must be communicated 48 hours in advance.<br>
-    • Offensive or harmful content is not permitted.<br>
-    • Organizer is responsible for managing attendees.<br>
-    • What's Next? holds the right to delist suspicious workshops.
-  </div>
-</div>
-</div>
-
-
-    <button type="submit">Create Workshop</button>
+    <button type="submit" class="wn-btn wn-btn--primary form-submit wn-interact">Create Workshop</button>
   </form>
+{% endblock %}
 
-  <!-- Footer -->
-  <footer class="footer">
-    <div class="footer-columns">
-      <div>
-        <h3>About Us</h3>
-        <p>Discover unique workshops and experiences happening near you. Powered by creativity and community.</p>
-      </div>
-      <div>
-        <h3>Quick Links</h3>
-        <ul>
-          <li><a href="#">Register Workshop</a></li>
-          <li><a href="#">Explore Events</a></li>
-          <li><a href="#">FAQs</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Feedback</h3>
-        <ul>
-          <li><a href="#">Submit Feedback</a></li>
-          <li><a href="#">Read Reviews</a></li>
-          <li><a href="#">Contact Support</a></li>
-        </ul>
-      </div>
-      <div>
-        <h3>Contact</h3>
-        <ul>
-          <li>Email: <a href="mailto:hello@whatsnext.com">hello@whatsnext.com</a></li>
-          <li>Phone: <a href="tel:+919999999999">+91 99999 99999</a></li>
-        </ul>
-        <div class="social-links">
-          <a href="#">Facebook</a>
-          <a href="#">Instagram</a>
-          <a href="#">Twitter</a>
-        </div>
-      </div>
-    </div>
-    <div class="footer-note">
-      © 2025 What's Next. All rights reserved.
-    </div>
-  </footer>
-
+{% block extra_js %}
   <script>
-    const categorySelect = document.getElementById('categorySelect');
-    const otherCategoryDiv = document.getElementById('otherCategoryDiv');
+    (function() {
+      var categorySelect = document.getElementById('categorySelect');
+      var otherCategoryDiv = document.getElementById('otherCategoryDiv');
+      var otherCategoryText = document.getElementById('otherCategoryText');
+      var form = categorySelect && categorySelect.form;
 
-    categorySelect.addEventListener('change', function () {
-      if (this.value === 'other') {
-        otherCategoryDiv.style.display = 'block';
-      } else {
-        otherCategoryDiv.style.display = 'none';
+      // initialise hidden state
+      if (otherCategoryDiv) {
+        otherCategoryDiv.classList.remove('is-visible');
       }
-    });
 
-  const priceInput = document.getElementById("priceInput");
-  const freeCheckbox = document.getElementById("freeWorkshopCheckbox");
+      if (categorySelect && otherCategoryDiv && otherCategoryText) {
+        categorySelect.addEventListener('change', function() {
+          var isOther = this.value === 'other';
+          if (isOther) {
+            otherCategoryDiv.classList.add('is-visible');
+            otherCategoryText.required = true;
+          } else {
+            otherCategoryDiv.classList.remove('is-visible');
+            otherCategoryText.required = false;
+            otherCategoryText.value = '';
+            otherCategoryText.setCustomValidity('');
+          }
+        });
+      }
 
-  freeCheckbox.addEventListener("change", function () {
-    if (this.checked) {
-      priceInput.value = "";
-      priceInput.disabled = true;
-    } else {
-      priceInput.disabled = false;
-    }
-  });
-</script>
-
-
-</body>
-</html>
+      if (form && categorySelect && otherCategoryText) {
+        form.addEventListener('submit', function(e) {
+          if (categorySelect.value === 'other') {
+            var value = (otherCategoryText.value || '').trim();
+            if (!value) {
+              otherCategoryText.setCustomValidity('Please enter a category name.');
+              otherCategoryText.reportValidity();
+              e.preventDefault();
+              return;
+            }
+          }
+          otherCategoryText.setCustomValidity('');
+        });
+      }
+      var priceInput = document.getElementById('priceInput');
+      var freeCheckbox = document.getElementById('freeWorkshopCheckbox');
+      if (priceInput && freeCheckbox) {
+        freeCheckbox.addEventListener('change', function() {
+          if (this.checked) { priceInput.value = ''; priceInput.disabled = true; }
+          else { priceInput.disabled = false; }
+        });
+      }
+    })();
+  </script>
+{% endblock %}

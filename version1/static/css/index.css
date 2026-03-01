@@ -1,62 +1,131 @@
-:root {
-  --gold: #E1B80D;
-  --plum: #4B2E39;
-  --white: #ffffff;
+/* Index: Explore workshops — layout, filters, cards */
+
+.index-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-body {
-  background-color: var(--white);
-  font-family: 'Segoe UI', sans-serif;
+@media (min-width: 768px) {
+  .index-layout {
+    grid-template-columns: 280px minmax(0, 1fr);
+    gap: var(--space-6);
+  }
 }
 
-.navbar {
-  border-bottom: 2px solid #eee;
+.index-filters {
+  height: fit-content;
+  position: sticky;
+  top: calc(56px + var(--space-2));
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
-.navbar-brand,
-.card-title,
-.sidebar-filters h5,
-.sidebar-filters p {
+.index-main {
+  min-width: 0;
+}
+
+.index-filter-block {
+  margin-bottom: var(--space-3);
+  padding-bottom: var(--space-3);
+  border-bottom: 1px solid var(--border);
+}
+
+.index-filter-block:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+.index-filter-label {
+  font-size: var(--text-small);
+  font-weight: var(--weight-semibold);
   color: var(--plum);
-  font-weight: 600;
+  margin: 0 0 var(--space-2);
 }
 
-.btn-primary,
-.btn-enroll {
-  background-color: var(--gold);
+.index-radio {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+  cursor: pointer;
+  font-size: var(--text-small);
+  color: var(--ink);
+  margin-bottom: var(--space-1);
+  transition: color var(--duration-fast);
+}
+
+.index-radio:hover { color: var(--plum); }
+
+.index-radio input {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--gold);
+  margin: 0;
+}
+
+.index-price-row {
+  display: flex;
+  gap: var(--space-2);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 480px) {
+  .index-price-row {
+    flex-direction: column;
+  }
+}
+
+.index-input {
+  flex: 1;
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-small);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-family);
+  outline: none;
+  transition: border-color var(--duration-fast), box-shadow var(--duration-fast);
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.index-input:focus {
   border-color: var(--gold);
-  color: #000;
+  box-shadow: 0 0 0 3px rgba(225, 184, 13, 0.2);
 }
 
-.btn-primary:hover,
-.btn-enroll:hover {
-  background-color: #cfa806;
-  border-color: #cfa806;
+.index-alert { margin-bottom: var(--space-3); }
+
+.index-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-4);
 }
 
-.badge.bg-primary {
-  background-color: var(--plum) !important;
-  color: white;
+@media (min-width: 640px) {
+  .index-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* ==========================================================================
-   Uniform workshop image display (no distortion, fixed container)
-   - Fixed-size container: same width/height for all cards; aspect-ratio keeps
-     proportions consistent without setting pixel height (responsive).
-   - object-fit: cover — image fills the box, aspect ratio preserved;
-     overflow is cropped (no stretch/squash). object-position: center keeps
-     crop centered for both portrait and landscape.
-   - Original uploaded images are never modified; all handling is CSS-only.
-   ========================================================================== */
-.workshop-card {
-  overflow: hidden;
+@media (min-width: 1024px) {
+  .index-grid { grid-template-columns: repeat(3, 1fr); }
 }
+
+.index-workshop-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.index-workshop-card .wn-card { padding: 0; }
 
 .workshop-card-image {
   width: 100%;
   aspect-ratio: 16 / 9;
   overflow: hidden;
-  background-color: #eee;
+  background: var(--border);
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -70,11 +139,10 @@ body {
   display: block;
 }
 
-/* Fallback when aspect-ratio is not supported (e.g. older Safari) */
 @supports not (aspect-ratio: 16 / 9) {
   .workshop-card-image {
     height: 0;
-    padding-bottom: 56.25%; /* 16:9 */
+    padding-bottom: 56.25%;
     position: relative;
   }
   .workshop-card-image__img {
@@ -84,61 +152,47 @@ body {
   }
 }
 
-/* Responsive: same uniform behavior; optional taller ratio on small screens */
 @media (max-width: 768px) {
-  .workshop-card-image {
-    aspect-ratio: 4 / 3;
-  }
-  @supports not (aspect-ratio: 4 / 3) {
-    .workshop-card-image {
-      padding-bottom: 75%;
-    }
-  }
+  .workshop-card-image { aspect-ratio: 4 / 3; }
 }
 
-.sidebar-filters .form-check-input:checked {
-  background-color: var(--gold);
-  border-color: var(--gold);
+.index-workshop-badge {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--text-caption);
+  font-weight: var(--weight-bold);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: var(--plum);
+  color: var(--white);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-soft);
 }
 
-.dropdown-menu {
-  max-height: 250px;
-  overflow-y: auto;
+.index-workshop-meta {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  font-size: var(--text-small);
+  color: var(--muted);
+  line-height: 1.6;
 }
 
+.index-workshop-footer {
+  margin-top: auto;
+  padding: var(--space-2) var(--space-3);
+  border-top: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
 
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  /* Sidebar filters: turn into horizontal bar on top */
-  .sidebar-filters {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: start;
-    gap: 1rem;
-    border: none;
-    box-shadow: none;
-  }
-
-  .sidebar-filters h5,
-  .sidebar-filters hr {
-    display: none; /* Hide heading + dividers on small screens */
-  }
-
-  .sidebar-filters p {
-    margin-bottom: 0;
-    font-size: 0.9rem;
-    font-weight: 600;
-  }
-
-  .sidebar-filters .form-check {
-    display: inline-block;
-    margin-right: 1rem;
-  }
-
-  /* Grid layout: one card per row */
-  .row.g-4 > [class*="col-"] {
-    flex: 0 0 100%;
-    max-width: 100%;
-  }
+.index-workshop-price {
+  font-weight: var(--weight-bold);
+  font-size: var(--text-body);
+  color: var(--plum);
 }

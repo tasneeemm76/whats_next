@@ -5,34 +5,38 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>{% block title %}What's Next?{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/theme.css' %}">
   <link rel="stylesheet" href="{% static 'css/auth.css' %}">
 </head>
 <body>
-  <!-- Sticky top navbar (compact, no clutter on mobile) -->
-  <header class="auth-navbar">
-    <div class="auth-navbar__inner">
-      <a class="auth-brand" href="{% url 'index' %}">What<span>'s Next</span></a>
-      <nav class="auth-navlinks" aria-label="Top navigation">
-        <a href="{% url 'index' %}">Home</a>
+  <div id="page-loader" class="page-loader" aria-hidden="true">
+    <div class="page-loader__spinner"></div>
+    <span class="page-loader__logo">What<span>'s Next</span></span>
+  </div>
+
+  <header class="wn-navbar">
+    <div class="wn-navbar__inner">
+      <a href="{% url 'index' %}" class="wn-navbar__brand">What<span>'s Next</span></a>
+      <nav class="wn-navbar__nav" id="nav-menu" aria-label="Main navigation">
+        <a href="{% url 'index' %}" class="wn-navbar__link">Home</a>
+        <a href="{% url 'login' %}" class="wn-navbar__link">Login</a>
+        <a href="#footer" class="wn-navbar__link">Contact</a>
       </nav>
+      <button type="button" class="wn-navbar__toggle" id="nav-toggle" aria-label="Open menu" aria-expanded="false">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+      </button>
     </div>
   </header>
 
   <main class="auth-shell">
-    <section class="auth-card" aria-label="Authentication">
-      <h1 class="auth-title">{% block heading %}{% endblock %}</h1>
-      <p class="auth-subtitle">{% block subheading %}{% endblock %}</p>
+    <section class="auth-card wn-card-solid reveal" aria-label="Authentication">
+      <h1 class="auth-title wn-h2">{% block heading %}{% endblock %}</h1>
+      <p class="auth-subtitle wn-body wn-body--muted">{% block subheading %}{% endblock %}</p>
 
       {% if messages %}
         <div class="auth-messages" role="status" aria-live="polite">
           {% for message in messages %}
-            <div class="auth-alert
-                        {% if message.tags == 'success' %}auth-alert--success
-                        {% elif message.tags == 'error' %}auth-alert--error
-                        {% elif message.tags == 'warning' %}auth-alert--warn
-                        {% else %}auth-alert--info{% endif %}">
-              {{ message }}
-            </div>
+            <div class="auth-alert auth-alert--{{ message.tags|default:'info' }}">{{ message }}</div>
           {% endfor %}
         </div>
       {% endif %}
@@ -41,6 +45,31 @@
       {% block switch %}{% endblock %}
     </section>
   </main>
+
+  <footer class="wn-footer" id="footer">
+    <div class="wn-footer__grid">
+      <div>
+        <h3 class="wn-footer__title">About Us</h3>
+        <p class="wn-footer__text">Discover unique workshops and experiences near you.</p>
+      </div>
+      <div>
+        <h3 class="wn-footer__title">Quick Links</h3>
+        <ul class="wn-footer__links">
+          <li><a href="{% url 'index' %}">Home</a></li>
+          <li><a href="{% url 'register_workshop' %}">Register</a></li>
+          <li><a href="{% url 'login' %}">Login</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3 class="wn-footer__title">Contact</h3>
+        <ul class="wn-footer__links">
+          <li><a href="mailto:hello@whatsnext.com">hello@whatsnext.com</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="wn-footer__bottom">© 2025 What's Next. All rights reserved.</div>
+  </footer>
+
+  <script src="{% static 'js/theme.js' %}"></script>
 </body>
 </html>
-
