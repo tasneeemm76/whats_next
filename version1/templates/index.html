@@ -22,41 +22,54 @@
 
 {% block content %}
   <form method="get" id="filter-form" class="index-layout">
-    <aside class="index-filters wn-card reveal">
-      <h2 class="wn-h3" style="margin: 0 0 var(--space-2);">Filters</h2>
+    <div class="index-filters-wrapper">
+      <button
+        type="button"
+        class="index-filters-toggle wn-btn wn-btn--secondary wn-interact"
+        id="filtersToggle"
+        aria-expanded="false"
+        aria-controls="filtersPanel"
+      >
+        <span>Filters</span>
+        <span class="index-filters-toggle__icon">▾</span>
+      </button>
 
-      <div class="index-filter-block">
-        <p class="index-filter-label">Category</p>
-        <label class="index-radio">
-          <input type="radio" name="category" value="All" {% if request.GET.category == "All" or not request.GET.category %}checked{% endif %}>
-          <span>All</span>
-        </label>
-        {% for cat in categories %}
+      <aside class="index-filters wn-card reveal" id="filtersPanel">
+        <h2 class="wn-h3" style="margin: 0 0 var(--space-2);">Filters</h2>
+
+        <div class="index-filter-block">
+          <p class="index-filter-label">Category</p>
           <label class="index-radio">
-            <input type="radio" name="category" value="{{ cat.name }}" {% if request.GET.category == cat.name %}checked{% endif %}>
-            <span>{{ cat.name }}</span>
+            <input type="radio" name="category" value="All" {% if request.GET.category == "All" or not request.GET.category %}checked{% endif %}>
+            <span>All</span>
           </label>
-        {% endfor %}
-      </div>
-
-      <div class="index-filter-block">
-        <p class="index-filter-label">Price Range</p>
-        <div class="index-price-row">
-          <input type="number" name="price_min" class="index-input" placeholder="Min" value="{{ request.GET.price_min }}">
-          <input type="number" name="price_max" class="index-input" placeholder="Max" value="{{ request.GET.price_max }}">
+          {% for cat in categories %}
+            <label class="index-radio">
+              <input type="radio" name="category" value="{{ cat.name }}" {% if request.GET.category == cat.name %}checked{% endif %}>
+              <span>{{ cat.name }}</span>
+            </label>
+          {% endfor %}
         </div>
-      </div>
 
-      <div class="index-filter-block">
-        <p class="index-filter-label">Duration</p>
-        {% for dur in durations %}
-          <label class="index-radio">
-            <input type="radio" name="duration" value="{{ dur }}" {% if request.GET.duration == dur %}checked{% elif not request.GET.duration and dur == "Any" %}checked{% endif %}>
-            <span>{% if dur == "Any" %}Any Duration{% else %}{{ dur }} hours{% endif %}</span>
-          </label>
-        {% endfor %}
-      </div>
-    </aside>
+        <div class="index-filter-block">
+          <p class="index-filter-label">Price Range</p>
+          <div class="index-price-row">
+            <input type="number" name="price_min" class="index-input" placeholder="Min" value="{{ request.GET.price_min }}">
+            <input type="number" name="price_max" class="index-input" placeholder="Max" value="{{ request.GET.price_max }}">
+          </div>
+        </div>
+
+        <div class="index-filter-block">
+          <p class="index-filter-label">Duration</p>
+          {% for dur in durations %}
+            <label class="index-radio">
+              <input type="radio" name="duration" value="{{ dur }}" {% if request.GET.duration == dur %}checked{% elif not request.GET.duration and dur == "Any" %}checked{% endif %}>
+              <span>{% if dur == "Any" %}Any Duration{% else %}{{ dur }} hours{% endif %}</span>
+            </label>
+          {% endfor %}
+        </div>
+      </aside>
+    </div>
 
     <div class="index-main">
       {% if request.GET.category or request.GET.price_min or request.GET.price_max or request.GET.duration %}
@@ -108,8 +121,25 @@
 
 {% block extra_js %}
   <script>
-    document.querySelectorAll('#filter-form input[type="radio"]').forEach(function(el) {
-      el.addEventListener('change', function() { document.getElementById('filter-form').submit(); });
-    });
+    (function () {
+      var form = document.getElementById('filter-form');
+      if (!form) return;
+
+      form.querySelectorAll('input[type="radio"]').forEach(function (el) {
+        el.addEventListener('change', function () {
+          form.submit();
+        });
+      });
+
+      var toggle = document.getElementById('filtersToggle');
+      var panel = document.getElementById('filtersPanel');
+      if (!toggle || !panel) return;
+
+      toggle.addEventListener('click', function () {
+        var isOpen = panel.classList.toggle('is-open');
+        toggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        toggle.querySelector('.index-filters-toggle__icon').textContent = isOpen ? '▴' : '▾';
+      });
+    })();
   </script>
 {% endblock %}
