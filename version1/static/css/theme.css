@@ -84,6 +84,12 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 /* Typography hierarchy */
 .wn-h1 {
   font-size: clamp(1.75rem, 4vw, var(--text-h1));
@@ -360,6 +366,13 @@ body {
   box-shadow: var(--shadow-card);
   padding: var(--space-4);
   border: 1px solid var(--border);
+}
+
+@media (max-width: 640px) {
+  .wn-card,
+  .wn-card-solid {
+    padding: var(--space-3);
+  }
 }
 
 /* Buttons */
