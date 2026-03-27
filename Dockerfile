@@ -4,6 +4,7 @@ FROM python:${PYTHON_VERSION}
 
 ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
+ENV PORT=8080
 
 # System deps needed by some Python packages (Postgres/client builds).
 RUN apt-get update && apt-get install -y --no-install-recommends \
@@ -22,7 +23,6 @@ COPY . /code
 
 RUN python manage.py collectstatic --noinput
 
-EXPOSE 8000
+EXPOSE 8080
 
-# Use PORT from Fly env if present, fallback to 8000.
-CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-8000} --workers 2 workshops.wsgi"]
+CMD ["gunicorn", "--bind", "0.0.0.0:8080", "--workers", "2", "--access-logfile", "-", "--error-logfile", "-", "workshops.wsgi:application"]
