@@ -5,6 +5,7 @@ from .models import WhatsNextUsers, WhatsNextOrganizers, WhatsNextWorkshops, Wha
 from django.utils import timezone
 from .decorators import login_required, organizer_required
 from django.db import transaction
+from django.core.paginator import Paginator
 
 
 
@@ -49,6 +50,8 @@ def create_workshop_view(request):
         description = request.POST.get('description')
         category_id = request.POST.get('category')
         other_category = (request.POST.get('other_category') or "").strip()
+        # Normalize whitespace so "  Art  " and "Art" are treated consistently
+        other_category = " ".join(other_category.split())
         location = request.POST.get('location')
         address = request.POST.get('address')
         date = request.POST.get('date')
@@ -102,7 +105,8 @@ def create_workshop_view(request):
             )
 
         messages.success(request, "Workshop created successfully!")
-        return redirect('/')  # Redirect to dashboard or list view
+        # Redirect back to the create form so the newly added "Other" category is visible immediately.
+        return redirect('create_workshop')
 
     categories = WhatsNextWorkshopCategories.objects.all()
     return render(request, "create_workshop.html", {"categories": categories})
@@ -324,3 +328,99 @@ def enroll_success(request, booking_id):
     """
     booking = get_object_or_404(WhatsNextBookings, id=booking_id)
     return render(request, "enroll_success.html", {"booking": booking})
+
+
+def admin_dashboard(request):
+    """
+    Simple admin-style overview page.
+    No authentication enforced (per requirements).
+    """
+    query = (request.GET.get("q") or "").strip()
+
+    # Users
+    users_qs = WhatsNextUsers.objects.all()
+    if query:
+        from django.db.models import Q
+
+        users_qs = users_qs.filter(
+            Q(name__icontains=query)
+            | Q(email__icontains=query)
+            | Q(phone__icontains=query)
+        )
+    user_sort = request.GET.get("user_sort", "id")
+    user_order = request.GET.get("user_order", "desc")
+    user_sort_map = {
+        "id": "id",
+        "name": "name",
+        "email": "email",
+        "created": "created_at",
+    }
+    user_field = user_sort_map.get(user_sort, "id")
+    if user_order == "desc":
+        user_field = f"-{user_field}"
+    users_qs = users_qs.order_by(user_field)
+    users_page = Paginator(users_qs, 10).get_page(request.GET.get("user_page"))
+
+    # Workshops
+    workshops_qs = WhatsNextWorkshops.objects.select_related("category", "organizer__user")
+    if query:
+        from django.db.models import Q
+
+        workshops_qs = workshops_qs.filter(
+            Q(title__icontains=query)
+            | Q(category__name__icontains=query)
+            | Q(location__icontains=query)
+        )
+    workshop_sort = request.GET.get("workshop_sort", "date")
+    workshop_order = request.GET.get("workshop_order", "desc")
+    workshop_sort_map = {
+        "id": "id",
+        "title": "title",
+        "date": "date",
+        "price": "price",
+    }
+    workshop_field = workshop_sort_map.get(workshop_sort, "date")
+    if workshop_order == "desc":
+        workshop_field = f"-{workshop_field}"
+    workshops_qs = workshops_qs.order_by(workshop_field)
+    workshops_page = Paginator(workshops_qs, 10).get_page(request.GET.get("workshop_page"))
+
+    # Bookings
+    bookings_qs = WhatsNextBookings.objects.select_related("user", "workshop")
+    if query:
+        from django.db.models import Q
+
+        bookings_qs = bookings_qs.filter(
+            Q(user__name__icontains=query)
+            | Q(user__email__icontains=query)
+            | Q(workshop__title__icontains=query)
+            | Q(status__icontains=query)
+        )
+    booking_sort = request.GET.get("booking_sort", "date")
+    booking_order = request.GET.get("booking_order", "desc")
+    booking_sort_map = {
+        "id": "id",
+        "user": "user__name",
+        "workshop": "workshop__title",
+        "date": "booked_at",
+        "status": "status",
+    }
+    booking_field = booking_sort_map.get(booking_sort, "booked_at")
+    if booking_order == "desc":
+        booking_field = f"-{booking_field}"
+    bookings_qs = bookings_qs.order_by(booking_field)
+    bookings_page = Paginator(bookings_qs, 10).get_page(request.GET.get("booking_page"))
+
+    context = {
+        "q": query,
+        "users_page": users_page,
+        "workshops_page": workshops_page,
+        "bookings_page": bookings_page,
+        "user_sort": user_sort,
+        "user_order": user_order,
+        "workshop_sort": workshop_sort,
+        "workshop_order": workshop_order,
+        "booking_sort": booking_sort,
+        "booking_order": booking_order,
+    }
+    return render(request, "admin_dashboard.html", context)

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}Admin Dashboard | What's Next{% endblock %}
+
+{% block content %}
+  <div class="wn-card-solid reveal" style="margin-bottom: var(--space-4);">
+    <div style="display: flex; flex-wrap: wrap; gap: var(--space-2); align-items: center; justify-content: space-between;">
+      <h2 class="wn-h2" style="margin: 0;">Admin Dashboard</h2>
+      <form method="get" style="display: flex; gap: var(--space-2); align-items: center; width: 100%; max-width: 360px;">
+        <input
+          type="search"
+          name="q"
+          value="{{ q }}"
+          placeholder="Search users, workshops, bookings…"
+          style="flex: 1; padding: 8px 12px; border-radius: 999px; border: 1px solid var(--border-strong); font-size: var(--text-small);"
+        >
+        <button type="submit" class="wn-btn wn-btn--primary">Search</button>
+      </form>
+    </div>
+  </div>
+
+  <section class="wn-card-solid reveal" style="margin-bottom: var(--space-4);">
+    <h3 class="wn-h3" style="margin-top: 0; margin-bottom: var(--space-2);">Users</h3>
+    <div style="overflow-x: auto;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>
+              <a href="?q={{ q }}&user_sort=id&user_order={% if user_sort == 'id' and user_order == 'asc' %}desc{% else %}asc{% endif %}">ID</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&user_sort=name&user_order={% if user_sort == 'name' and user_order == 'asc' %}desc{% else %}asc{% endif %}">Name</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&user_sort=email&user_order={% if user_sort == 'email' and user_order == 'asc' %}desc{% else %}asc{% endif %}">Email</a>
+            </th>
+            <th>Phone</th>
+            <th>Role</th>
+            <th>Joined</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users_page %}
+            <tr>
+              <td>{{ user.id }}</td>
+              <td>{{ user.name }}</td>
+              <td>{{ user.email }}</td>
+              <td>{{ user.phone|default:"—" }}</td>
+              <td>{{ user.get_role_display }}</td>
+              <td>{{ user.created_at|date:"Y-m-d H:i" }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">No users found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if users_page.paginator.num_pages > 1 %}
+      <div class="admin-pagination">
+        {% if users_page.has_previous %}
+          <a href="?q={{ q }}&user_page={{ users_page.previous_page_number }}&user_sort={{ user_sort }}&user_order={{ user_order }}">Previous</a>
+        {% endif %}
+        <span>Page {{ users_page.number }} of {{ users_page.paginator.num_pages }}</span>
+        {% if users_page.has_next %}
+          <a href="?q={{ q }}&user_page={{ users_page.next_page_number }}&user_sort={{ user_sort }}&user_order={{ user_order }}">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="wn-card-solid reveal" style="margin-bottom: var(--space-4);">
+    <h3 class="wn-h3" style="margin-top: 0; margin-bottom: var(--space-2);">Workshops</h3>
+    <div style="overflow-x: auto;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>
+              <a href="?q={{ q }}&workshop_sort=id&workshop_order={% if workshop_sort == 'id' and workshop_order == 'asc' %}desc{% else %}asc{% endif %}">ID</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&workshop_sort=title&workshop_order={% if workshop_sort == 'title' and workshop_order == 'asc' %}desc{% else %}asc{% endif %}">Title</a>
+            </th>
+            <th>Category</th>
+            <th>Organizer</th>
+            <th>
+              <a href="?q={{ q }}&workshop_sort=date&workshop_order={% if workshop_sort == 'date' and workshop_order == 'asc' %}desc{% else %}asc{% endif %}">Date</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&workshop_sort=price&workshop_order={% if workshop_sort == 'price' and workshop_order == 'asc' %}desc{% else %}asc{% endif %}">Price</a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for w in workshops_page %}
+            <tr>
+              <td>{{ w.id }}</td>
+              <td>{{ w.title }}</td>
+              <td>{{ w.category.name|default:"—" }}</td>
+              <td>{{ w.organizer.user.name }}</td>
+              <td>{{ w.date }}</td>
+              <td>₹{{ w.price }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="6">No workshops found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if workshops_page.paginator.num_pages > 1 %}
+      <div class="admin-pagination">
+        {% if workshops_page.has_previous %}
+          <a href="?q={{ q }}&workshop_page={{ workshops_page.previous_page_number }}&workshop_sort={{ workshop_sort }}&workshop_order={{ workshop_order }}">Previous</a>
+        {% endif %}
+        <span>Page {{ workshops_page.number }} of {{ workshops_page.paginator.num_pages }}</span>
+        {% if workshops_page.has_next %}
+          <a href="?q={{ q }}&workshop_page={{ workshops_page.next_page_number }}&workshop_sort={{ workshop_sort }}&workshop_order={{ workshop_order }}">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+
+  <section class="wn-card-solid reveal">
+    <h3 class="wn-h3" style="margin-top: 0; margin-bottom: var(--space-2);">Bookings</h3>
+    <div style="overflow-x: auto;">
+      <table class="admin-table">
+        <thead>
+          <tr>
+            <th>
+              <a href="?q={{ q }}&booking_sort=id&booking_order={% if booking_sort == 'id' and booking_order == 'asc' %}desc{% else %}asc{% endif %}">ID</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&booking_sort=user&booking_order={% if booking_sort == 'user' and booking_order == 'asc' %}desc{% else %}asc{% endif %}">User</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&booking_sort=workshop&booking_order={% if booking_sort == 'workshop' and booking_order == 'asc' %}desc{% else %}asc{% endif %}">Workshop</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&booking_sort=date&booking_order={% if booking_sort == 'date' and booking_order == 'asc' %}desc{% else %}asc{% endif %}">Booked At</a>
+            </th>
+            <th>
+              <a href="?q={{ q }}&booking_sort=status&booking_order={% if booking_sort == 'status' and booking_order == 'asc' %}desc{% else %}asc{% endif %}">Status</a>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for b in bookings_page %}
+            <tr>
+              <td>{{ b.id }}</td>
+              <td>{{ b.user.name }} ({{ b.user.email }})</td>
+              <td>{{ b.workshop.title }}</td>
+              <td>{{ b.booked_at|date:"Y-m-d H:i" }}</td>
+              <td>{{ b.get_status_display }}</td>
+            </tr>
+          {% empty %}
+            <tr>
+              <td colspan="5">No bookings found.</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    {% if bookings_page.paginator.num_pages > 1 %}
+      <div class="admin-pagination">
+        {% if bookings_page.has_previous %}
+          <a href="?q={{ q }}&booking_page={{ bookings_page.previous_page_number }}&booking_sort={{ booking_sort }}&booking_order={{ booking_order }}">Previous</a>
+        {% endif %}
+        <span>Page {{ bookings_page.number }} of {{ bookings_page.paginator.num_pages }}</span>
+        {% if bookings_page.has_next %}
+          <a href="?q={{ q }}&booking_page={{ bookings_page.next_page_number }}&booking_sort={{ booking_sort }}&booking_order={{ booking_order }}">Next</a>
+        {% endif %}
+      </div>
+    {% endif %}
+  </section>
+{% endblock %}

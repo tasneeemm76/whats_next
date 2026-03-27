@@ -14,6 +14,7 @@ urlpatterns = [
     path('dashboard/previous/', views.previous_workshops, name='previous_workshops'),
     path('dashboard/promote/', views.promote_workshop, name='promote_workshop'),
     path('dashboard/profile/', views.organizer_profile, name='organizer_profile'),
+    path('admin-dashboard/', views.admin_dashboard, name='admin_dashboard'),
     path('workshops/create/', views.create_workshop_view, name='create_workshop'),
     path("enroll/<int:workshop_id>/", views.enroll_workshop, name="enroll_workshop"),
     path("enroll/<int:workshop_id>/confirm/", views.confirm_enroll, name="confirm_enroll"),

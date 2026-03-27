@@ -80,7 +80,20 @@ body {
   font-size: var(--text-body);
   line-height: var(--line-normal);
   color: var(--ink);
-  background: var(--peach);
+  /* Full-screen background image */
+  background-color: var(--peach); /* fallback */
+  background-image:
+    linear-gradient(
+      180deg,
+      rgba(255, 246, 237, 0.86) 0%,
+      rgba(255, 246, 237, 0.72) 55%,
+      rgba(255, 246, 237, 0.9) 100%
+    ),
+    url('/static/images/web_bg.jpg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -626,3 +639,48 @@ body {
 }
 
 .wn-dashboard-card:active { transform: translateY(-2px); }
+
+/* Admin tables */
+.admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--text-small);
+}
+
+.admin-table th,
+.admin-table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+
+.admin-table th a {
+  color: var(--plum);
+  text-decoration: none;
+  font-weight: var(--weight-semibold);
+}
+
+.admin-table th a:hover {
+  text-decoration: underline;
+}
+
+.admin-table tbody tr:nth-child(even) {
+  background: rgba(255, 255, 255, 0.6);
+}
+
+.admin-pagination {
+  margin-top: var(--space-2);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  align-items: center;
+  justify-content: flex-end;
+  font-size: var(--text-caption);
+}
+
+.admin-pagination a {
+  color: var(--plum);
+  text-decoration: none;
+  font-weight: var(--weight-semibold);
+}

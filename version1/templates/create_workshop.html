@@ -87,24 +87,26 @@
       var otherCategoryText = document.getElementById('otherCategoryText');
       var form = categorySelect && categorySelect.form;
 
-      // initialise hidden state
-      if (otherCategoryDiv) {
-        otherCategoryDiv.classList.remove('is-visible');
+      function syncOtherCategoryUI() {
+        if (!categorySelect || !otherCategoryDiv || !otherCategoryText) return;
+
+        var isOther = categorySelect.value === 'other';
+        if (isOther) {
+          otherCategoryDiv.classList.add('is-visible');
+          otherCategoryText.required = true;
+        } else {
+          otherCategoryDiv.classList.remove('is-visible');
+          otherCategoryText.required = false;
+          otherCategoryText.value = '';
+          otherCategoryText.setCustomValidity('');
+        }
       }
 
-      if (categorySelect && otherCategoryDiv && otherCategoryText) {
-        categorySelect.addEventListener('change', function() {
-          var isOther = this.value === 'other';
-          if (isOther) {
-            otherCategoryDiv.classList.add('is-visible');
-            otherCategoryText.required = true;
-          } else {
-            otherCategoryDiv.classList.remove('is-visible');
-            otherCategoryText.required = false;
-            otherCategoryText.value = '';
-            otherCategoryText.setCustomValidity('');
-          }
-        });
+      // Initialise UI based on current select value (covers page reloads)
+      syncOtherCategoryUI();
+
+      if (categorySelect) {
+        categorySelect.addEventListener('change', syncOtherCategoryUI);
       }
 
       if (form && categorySelect && otherCategoryText) {
