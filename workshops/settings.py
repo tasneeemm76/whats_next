@@ -78,54 +78,16 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'workshops.wsgi.application'
 
-
-# Database
-# https://docs.djangoproject.com/en/5.1/ref/settings/#databases
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        
-    }
-}
+import dj_database_url
+import os
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'whats_next',
-        'USER':'root',
-        'PASSWORD':'root',
-        'HOST':'127.0.0.1',
-        'PORT':'3306',
-        'OPTIONS':{
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
-    }
-    
+    'default': dj_database_url.config(
+        default='sqlite:///db.sqlite3',
+        conn_max_age=600,
+        ssl_require=True
+    )
 }
-}'''
-
-_default_db = {
-    'ENGINE': 'django.db.backends.sqlite3',
-    'NAME': BASE_DIR / 'db.sqlite3',
-}
-database_url = (os.getenv("DATABASE_URL") or "").strip()
-if database_url and "://" in database_url and not database_url.startswith("://"):
-    try:
-        DATABASES = {
-            'default': dj_database_url.parse(
-                database_url,
-                conn_max_age=600,
-                ssl_require=True
-            )
-        }
-    except Exception:
-        DATABASES = {'default': _default_db}
-else:
-    DATABASES = {'default': _default_db}
-
-
-
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
