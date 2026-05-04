@@ -6,7 +6,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 ENV PYTHONUNBUFFERED=1
 ENV PORT=8080
 
-# System deps needed by some Python packages (Postgres/client builds).
+# Install system dependencies (for PostgreSQL)
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpq-dev \
     gcc \
@@ -14,14 +14,15 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 WORKDIR /code
 
+# Install Python dependencies
 COPY requirements.txt /tmp/requirements.txt
-RUN set -eux; \
-    pip install --upgrade pip; \
+RUN pip install --upgrade pip && \
     pip install --no-cache-dir -r /tmp/requirements.txt
 
+# Copy project
 COPY . /code
 
-RUN python manage.py collectstatic --noinput
+# ⚠️ DO NOT run collectstatic here
 
 EXPOSE 8080
 
