@@ -88,17 +88,17 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
+
 STATIC_URL = '/static/'
 
-# This is where YOUR files are
 STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'staticfiles')
+    os.path.join(BASE_DIR, 'version1', 'staticfiles')
 ]
 
-# This is where collectstatic outputs
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles_build')
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+
 # Media files
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
